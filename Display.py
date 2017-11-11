@@ -8,6 +8,7 @@ screeny = 600    #these are the size of the screen for the game
 
 textColour = (100,150,250)
 white = (200,200,200)
+
 black = (0,0,0)
 red = (220,70,80)     #all the colours used in this game
 cards = []
