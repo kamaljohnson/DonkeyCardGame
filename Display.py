@@ -60,6 +60,7 @@ def getText(string):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
+                pygame.quit()
                 exit()
             # Feed it with events every frame
             temp = textinput.update(events)
@@ -67,10 +68,13 @@ def getText(string):
             screen.blit(textinput.get_surface(), (10, 10))
             pygame.display.update()
             if temp:
-                return textinput.get_text()
                 flag = 1
-                break
+                return textinput.get_text()
 def displayServerCode(string):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            print('quit')
+            pygame.quit()
     myfont = pygame.font.SysFont("arial", 30)
     screen.blit(background,(0,0))
 

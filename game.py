@@ -35,6 +35,7 @@ while True:
     serverIP = ''
     PORT = 0 # the port to the server from the currnet client
     thread = threading.Thread(target=Display.loading)
+    serverPORT = 5000
     if isServer:
         myIPread = list(myIP)
         for i in range(len(myIPread)):
@@ -48,22 +49,29 @@ while True:
         select = menu.menu_UI(serverMenu)
         thread.start()
         Display.displayServerCode(myIPread)
+        mySocket = socket(AF_INET,SOCK_DGRAM)
+        mySocket.bind((sip,serverPORT))
+        clientAddr = [] #this list will store all the address of the players connected to the server
+        print(select)
         for i in range(select+1):
-            PORTS.append(5000 + i)
-            mySocket.append(socket(AF_INET, SOCK_DGRAM))
-            mySocket[i].bind((sip, PORTS[i]))
-            try:
-                data = mySocket[i].recv(SIZE)
-                msgthread = threading.Thread(target=Display.displayMsg,args=data + ' joined to the game')
-                msgthread.start()
-            except:
-                PORTS.pop()
-                i-=1
-                mySocket.pop()
-        print(PORTS)
-        while len(IPs) < len(PORTS):
-            data,addr = mySocket[i].recvfrom(SIZE)
-            IPs.append(addr.decode())
+            #PORTS.append(5000 + i)
+            #mySocket.append(socket(AF_INET, SOCK_DGRAM))
+            #mySocket[i].bind((sip, PORTS[i]))
+            #try:
+            print('waiting for the client to send messgae to the server. . .')
+            data,addr = mySocket.recvfrom(SIZE)
+            if addr not in clientAddr:
+                clientAddr.append(addr)
+            print(addr + ' is connected')
+            print(clientAddr)
+            msgthread = threading.Thread(target=Display.displayMsg,args=data + ' joined to the game')
+            msgthread.start()
+            #except:
+            #    pass
+        #print(PORTS)
+        #while len(IPs) < len(PORTS):               #use clientAddr for sending to individual clients connected to the server
+        #    data,addr = mySocket.recvfrom(SIZE)
+        #    IPs.append(addr)
     else:
         text = Display.getText('ENTER CODE')
         text = list(text)
@@ -72,20 +80,19 @@ while True:
                 text[t] = str(ord(text[t])-65)
         serverIP = ''.join(text)
         mySocket = socket(AF_INET,SOCK_DGRAM)
-        tempPORT = 5000
+        PORT = 5000    #the port is set to 0 so that at the run time it will be assigned to any free port
         thread.start()
         while True:
             try:
-                mySocket.connect((serverIP,tempPORT))
-                mySocket.recv(SIZE)
-                PORT = tempPORT
-                print('connection successful')
+                print(PORT,serverIP)
+                print('trying to connect to the server. . .')
+                mySocket.bind((serverIP,PORT))
+                mySocket.setblocking(0)
+                mySocket.sendto('hello'.encode('utf-8'),serverIP)
+                print('sent hello to the server')
                 break
             except:
-                tempPORT+=1
-            if tempPORT>5010:
-                #print('cannot connect to the server')
-                tempPORT = 5000
+                pass
     Display.bootUp()
     START = 1
     myTurn = False

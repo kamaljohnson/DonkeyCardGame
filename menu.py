@@ -59,5 +59,5 @@ class Menu():
                         myfont = pygame.font.SysFont("arial", 50)
                     else:
                         label = myfont.render(current_menu[menu_pos], 2, self.blue)
-                        screen2.blit(label, (screenx//2-60,screeny//2 + (menu_pos - pos)*50 ))
+                        screen2.blit(label, (screenx//2-60,screeny//2 + (menu_pos - pos)*50))
                     pygame.display.update()
