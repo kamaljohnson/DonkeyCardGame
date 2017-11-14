@@ -3,6 +3,50 @@ from menu import *
 import Display
 import sys
 import threading
+import IPaddress        #this module is for getting the ip address of all the computers connected to the system
+
+import threading
+from queue import Queue
+import socket
+
+
+
+
+
+####################################################################################################
+def portscan(host):             #this funtion returns the socket object with the port connected to the given host
+    print_lock = threading.Lock()
+
+    q = Queue()
+    s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) #this type of socket is for local lan connections
+    def portScan(port):                             #this is a basic funtion
+        try:
+            s.connect((host,port))
+            return s
+        except socket.error as err:
+            print(str(err))
+        with print_lock:
+            print('the port:',port,'is connected to this computer')
+
+    for port in range(1000,1100):        # the range of ports used in this porgram range from 1000 to 1100
+        q.put(port)
+
+    def threader():                 #invoking the portScanner funtion using the threader
+        while True:
+            port = q.get()
+            portScan(port)
+            q.task_done()
+
+    for x in range(10):     #have 10 threads
+        t = threading.Thread(target= threader)
+        t.daemon = True             #the thread dies when the main thread dies
+        t.start()
+
+    q.join()        #the program will go beyond this line if all the taskes are over
+                    #i.e. the queue becomes empty
+############################################################################################################
+
+
 
 #code for stoping a thread
 def getcard(cardNumbers,s):
@@ -35,43 +79,13 @@ while True:
     serverIP = ''
     PORT = 0 # the port to the server from the currnet client
     thread = threading.Thread(target=Display.loading)
-    serverPORT = 5000
-    if isServer:
-        myIPread = list(myIP)
-        for i in range(len(myIPread)):
-            if myIPread[i] == '.':
-                pass
-            else:
-                myIPread[i] = chr(int(myIPread[i])+65)
-        myIPread = ''.join(myIPread)
-        sip = '0.0.0.0'
-        serverMenu = ['2 Players','3 Players','4 Players','5 Players']
-        select = menu.menu_UI(serverMenu)
-        thread.start()
-        Display.displayServerCode(myIPread)
-        mySocket = socket(AF_INET,SOCK_DGRAM)
-        mySocket.bind((sip,serverPORT))
-        clientAddr = [] #this list will store all the address of the players connected to the server
-        print(select)
-        for i in range(select+1):
-            #PORTS.append(5000 + i)
-            #mySocket.append(socket(AF_INET, SOCK_DGRAM))
-            #mySocket[i].bind((sip, PORTS[i]))
-            #try:
-            print('waiting for the client to send messgae to the server. . .')
-            data,addr = mySocket.recvfrom(SIZE)
-            if addr not in clientAddr:
-                clientAddr.append(addr)
-            print(addr + ' is connected')
-            print(clientAddr)
-            msgthread = threading.Thread(target=Display.displayMsg,args=data + ' joined to the game')
-            msgthread.start()
-            #except:
-            #    pass
-        #print(PORTS)
-        #while len(IPs) < len(PORTS):               #use clientAddr for sending to individual clients connected to the server
-        #    data,addr = mySocket.recvfrom(SIZE)
-        #    IPs.append(addr)
+    serverPORT = 1000
+    if isServer:    #the code for connecting to all the other computer goes here
+        IPs = IPaddress.doRangeScan()       #now IPs will contain all the ip address of the other computers
+        print(IPs,'these are all the ip addresses connected to this computer')
+        for host in IPs:
+            mySocket.append(portscan(host))
+            print(mySocket)     #all the sockets created to the other computers connected to this computer
     else:
         text = Display.getText('ENTER CODE')
         text = list(text)
@@ -80,14 +94,13 @@ while True:
                 text[t] = str(ord(text[t])-65)
         serverIP = ''.join(text)
         mySocket = socket(AF_INET,SOCK_DGRAM)
-        PORT = 5000    #the port is set to 0 so that at the run time it will be assigned to any free port
+        PORT = 0    #the port is set to 0 so that at the run time it will be assigned to any free port
         thread.start()
         while True:
             try:
                 print(PORT,serverIP)
                 print('trying to connect to the server. . .')
-                mySocket.bind((serverIP,PORT))
-                mySocket.setblocking(0)
+                mySocket.connect((serverIP,PORT))
                 mySocket.sendto('hello'.encode('utf-8'),serverIP)
                 print('sent hello to the server')
                 break
