@@ -44,12 +44,9 @@ def socket_accept():
         All_connections.append(conn)
         All_address.append(address)
         t1 = threading.Thread(target = sendingthreader)
-        t2 = threading.Thread(target = recvthreader)
         t1.start()
+        t2 = threading.Thread(target = Recv,args=(conn,))
         t2.start()
-
-def recvthreader(conn):
-    Recv(conn)
 
 def sendingthreader():
     while True:
@@ -66,6 +63,7 @@ def Send(data,connIndex):
     sendingQ.put([data,connIndex])
 
 def Recv(conn):
+    print('ready to recv data from client')
     data = conn.recv(1024)
     dataRecved.append(str.decode(data))
 

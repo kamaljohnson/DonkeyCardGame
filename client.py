@@ -35,8 +35,9 @@ def socket_connect():
 
 
 # Receive commands from remote server and run on local machine
-def recvdata(s):
+def recvdata():
     while True:
+        print('ready to recv data from server')
         data = s.recv(1024)
         all_recved_data.append(data.decode())
 def get_recved_data():
