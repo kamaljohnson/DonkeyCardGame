@@ -39,24 +39,27 @@ while(True):
         code = host[-1]
         code = list(code)
         print(code)
-        CODE = ''
         for i,c in enumerate(code):
             code[i] = chr(int(c)+65)
-        CODE = ''.join(code)
-        print(CODE)
-        Display.displayServerCode(CODE)
+        code = ''.join(code)
+        print(code)
+        Display.displayServerCode(code)
         t = threading.Thread(target=server.main)
         t.start()
         time.sleep(20)
     elif select == 1:
-        client.main()
         CODE = Display.getText('text')
+        print(CODE)
         IP = '192.168.1.'
         CODE = list(CODE)
         for i,c in enumerate(CODE):
-            CODE[i] = str(ascii(CODE[i]-65))
-        IP.join(CODE)
+            CODE[i] = str(ord(CODE[i])-65)
+        CODE = ''.join(CODE)
+        CODE.replace(' ', '')
+        print(CODE)
+        IP += CODE
         print(IP)
+        client.main(IP)
     elif select == 2:
         #code for displaying help
         pass

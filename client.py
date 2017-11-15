@@ -4,13 +4,14 @@ from queue import Queue
 dataQ = Queue()
 
 all_recved_data = []
+
 # Create a socket
-def socket_create():
+def socket_create(ip):
     try:
         global host
         global port
-        global s
-        host = '192.168.1.100'          #this is the server ip address
+        global s          #this is the server ip address
+        host = ip
         port = 1000
         s = socket.socket()
     except socket.error as msg:
@@ -48,8 +49,8 @@ def sentdata():
         data = dataQ.get()
         s.send(str.encode(data))
         dataQ.task_done()
-def main():
-    socket_create()
+def main(ip):
+    socket_create(ip)
     socket_connect()
 
 def Send(data):
