@@ -27,39 +27,41 @@ def getcard(cardNumbers,s):
     if s == 1:
         cardNumbers = sorted(cardNumbers)
     return cardNumbers
+Display.bootUp()
 
 while(True):
-    main_menu = ['CREATE','JOIN','HELP','EXIT']
+    main_menu = ['HOST','JOIN','HELP','EXIT']
     mainMenu = menu.Menu()
     select = mainMenu.menu_UI(main_menu)
     if select == 0:
+        server_menu = ['2 PLAYER', '3 PLAYER', '4 PLAYER', '5 PLAYER']
+        server_Menu = menu.Menu()
+        players = mainMenu.menu_UI(server_menu)
+        players+=1
         host = socket.gethostbyname(socket.gethostname())
-        print(host)
         host = host.split('.')
-        print(host)
         code = host[-1]
         code = list(code)
-        print(code)
         for i,c in enumerate(code):
             code[i] = chr(int(c)+65)
         code = ''.join(code)
-        print(code)
         Display.displayServerCode(code)
-        t = threading.Thread(target=server.main)
+        t = threading.Thread(target=Display.loading)
+        Display.LOADING = True
         t.start()
-        time.sleep(20)
+        server.main(players)
+        Display.LOADING = False
+        print('all the players are connected.')
+        Display.bootUp()
     elif select == 1:
-        CODE = Display.getText('text')
-        print(CODE)
+        CODE = Display.getText('enter the code')
         IP = '192.168.1.'
         CODE = list(CODE)
         for i,c in enumerate(CODE):
             CODE[i] = str(ord(CODE[i])-65)
         CODE = ''.join(CODE)
         CODE.replace(' ', '')
-        print(CODE)
         IP += CODE
-        print(IP)
         client.main(IP)
     elif select == 2:
         #code for displaying help

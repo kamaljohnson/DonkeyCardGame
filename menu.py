@@ -45,7 +45,7 @@ class Menu():
                         if pos != 0:
                             sound_select.play()
                         pos -= 1
-                    elif event.key == pygame.K_SPACE:
+                    elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         return(pos)
                 else:
                     blitBackground = False
@@ -60,11 +60,11 @@ class Menu():
                 #pygame.display.update()
                 for menu_pos in range(len(current_menu)):
                     if pos == menu_pos:
-                        myfont = pygame.font.SysFont("arial", 50)
-                        label = myfont.render('->' + current_menu[menu_pos], 2, self.black)
-                        screen2.blit(label,(screenx//2-110,screeny//2))
+                        myfont = pygame.font.SysFont("arial", 70)
+                        label = myfont.render(current_menu[menu_pos], 2, self.black)
+                        screen2.blit(label,(screenx//2-80,screeny//2 - 50))
                     else:
-                        myfont = pygame.font.SysFont("arial", 40)
+                        myfont = pygame.font.SysFont("arial", 50)
                         label = myfont.render(current_menu[menu_pos], 2, self.blue)
-                        screen2.blit(label, (screenx//2-60,screeny//2 + (menu_pos - pos)*50))
+                        screen2.blit(label, (screenx//2-60,screeny//2 + (menu_pos - pos)*65 - 50))
                     #pygame.display.update()

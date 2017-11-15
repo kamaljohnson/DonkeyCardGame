@@ -18,6 +18,7 @@ white = (200,200,200)
 black = (0,0,0)
 red = (220,70,80)     #all the colours used in this game
 cards = []
+LOADING = False
 class TestSprite(pygame.sprite.Sprite):
     def __init__(self):
         super(TestSprite, self).__init__()
@@ -49,7 +50,7 @@ background = pygame.transform.scale(background,(screenx,screeny))
 def loading():
     myfont = pygame.font.SysFont("arial", 30)
     my_sprite = TestSprite()
-    while True:
+    while LOADING:
         event = pygame.event.poll()
         if event.type == pygame.QUIT:
             pygame.quit()

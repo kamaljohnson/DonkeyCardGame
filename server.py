@@ -37,12 +37,15 @@ def socket_bind():
 
 
 # Establish connection with client (socket must be listening for them)
-def socket_accept():
+def socket_accept(numberOfClients):
     while True:
         conn, address = s.accept()
         print("Connection has been established | " + "IP " + address[0] + " | Port " + str(address[1]))
         All_connections.append(conn)
         All_address.append(address)
+        if len(All_connections) == numberOfClients:
+            print('connected to all',numberOfClients)
+            return 1
         t1 = threading.Thread(target = sendingthreader)
         t1.start()
         t2 = threading.Thread(target = Recv,args=(conn,))
@@ -71,7 +74,8 @@ def Recv(conn):
 def getData():
     return(dataRecved)
 
-def main():
+def main(clients):
+    numberOfClients = clients
     socket_create()
     socket_bind()
-    socket_accept()
+    socket_accept(clients)
