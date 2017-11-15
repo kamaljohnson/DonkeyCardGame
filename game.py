@@ -12,6 +12,7 @@ pygame.init()
 
 #this funtions will update the screen regularly with a particular FPS
 def drawing():
+    print('i am here')
     while True:
         Display.drawing()
 drawingThread = threading.Thread(target=drawing)

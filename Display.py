@@ -62,8 +62,8 @@ def getText(string):
     textinput = pygame_textinput.TextInput()
     clock = pygame.time.Clock()
     flag = 0
+    screen.blit(background, (0, 0))
     while flag == 0:
-        screen.blit(background, (0, 0))
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -73,7 +73,7 @@ def getText(string):
             temp = textinput.update(events)
             # Blit its surface onto the screen
             screen.blit(textinput.get_surface(), (10, 10))
-            pygame.display.update()
+            #pygame.display.update()
             if temp:
                 flag = 1
                 return textinput.get_text()

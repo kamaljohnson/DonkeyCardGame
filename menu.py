@@ -13,7 +13,6 @@ screeny = 600
 screen2 = pygame.display.set_mode((screenx,screeny))
 background = pygame.transform.scale(background,(screenx,screeny))
 class Menu():
-
     menu = [];  #will be used to enter the requires list for a particular task
 
     # the codes for different colors are initialised over here
@@ -29,7 +28,7 @@ class Menu():
     def menu_UI(self,current_menu):
         pos = 0
         screen2.blit(background, (0, 0))
-        blitBackground = False
+        blitBackground = True
         while(True):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

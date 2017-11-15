@@ -1,8 +1,8 @@
 import pygame
 import pygame.locals as pl
 import os.path
+pygame.init()
 pygame.font.init()
-
 
 class TextInput():
     """
@@ -10,6 +10,10 @@ class TextInput():
     This class let's the user input a short, one-lines piece of text at a blinking cursor
     that can be moved using the arrow-keys. Delete, home and end work as well.
     """
+    background = pygame.image.load('Assets\\Board.png')
+    background = pygame.transform.scale(background, (600, 600))
+
+    screen = pygame.display.set_mode((600, 600))
     def __init__(self,  font_family = "",
                         font_size = 25,
                         antialias=True,
@@ -68,6 +72,7 @@ class TextInput():
                     self.keyrepeat_counters[event.key] = [0, event.unicode]
 
                 if event.key == pl.K_BACKSPACE: # FIXME: Delete at beginning of line?
+                    self.screen.blit(self.background, (0, 0))
                     self.input_string = self.input_string[:max(self.cursor_position - 1, 0)] + \
                                         self.input_string[self.cursor_position:]
 
