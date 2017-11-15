@@ -1,7 +1,14 @@
 import pygame
 import time
 import pygame_textinput
+import threading
+
 pygame.init()
+FPS = 60        #the frams per second is initialised to 30
+
+def drawing():
+    time.sleep(1/FPS)
+    pygame.display.update()
 
 screenx = 600
 screeny = 600    #these are the size of the screen for the game
@@ -36,9 +43,9 @@ for i in range(1,54):
 background = pygame.image.load('Assets\\Board.png')
 screen = pygame.display.set_mode((screenx, screeny))
 background = pygame.transform.scale(background,(screenx,screeny))
-screen.blit(background, (0, 0))
+#screen.blit(background, (0, 0))
 
-pygame.display.update()
+#pygame.display.update()
 def loading():
     myfont = pygame.font.SysFont("arial", 30)
     my_sprite = TestSprite()
@@ -49,7 +56,7 @@ def loading():
         img = my_sprite.update()
         img = pygame.image.load(img)
         screen.blit(img,(screenx//2-130,screeny//2+50))
-        pygame.display.update()
+        #pygame.display.update()
         time.sleep(0.04)
 def getText(string):
     textinput = pygame_textinput.TextInput()
@@ -66,7 +73,7 @@ def getText(string):
             temp = textinput.update(events)
             # Blit its surface onto the screen
             screen.blit(textinput.get_surface(), (10, 10))
-            pygame.display.update()
+            #pygame.display.update()
             if temp:
                 flag = 1
                 return textinput.get_text()
@@ -89,7 +96,7 @@ def displayServerCode(string):
     myfont = pygame.font.SysFont("arial", 50)
     label2 = myfont.render(string, 2, textColour)
     screen.blit(label2, (screenx // 2 - 164, screeny // 2-32))
-    pygame.display.update()
+    #pygame.display.update()
 def displayMsg(string):
     count = 0
     TextC = textColour
@@ -106,7 +113,7 @@ def displayMsg(string):
         myfont = pygame.font.SysFont("arial", textsize)
         label = myfont.render(string, 2, TextC)
         screen.blit(label, (X,Y))
-        pygame.display.update()
+        #pygame.display.update()
         time.sleep(0.01)
         if count == 70:
             break
@@ -122,7 +129,7 @@ def bootUp():
         locCard = pygame.image.load(cards[52]).convert()
         locCard = pygame.transform.scale(locCard, (80, 105))
         screen.blit(locCard, (x, y))
-        pygame.display.update()
+        #pygame.display.update()
         if(card%13 == 0):
             y += 100
             x = screenx // 2 - (space * 13 // 2 + 35)
@@ -132,7 +139,7 @@ def bootUp():
         locCard = pygame.image.load(cards[card - 1]).convert()
         locCard = pygame.transform.scale(locCard, (80, 105))
         screen.blit(locCard, (x, y))
-        pygame.display.update()
+        #pygame.display.update()
         if(card%13 == 0):
             y += 100
             x = screenx // 2 - (space * 13 // 2 + 35)
@@ -172,7 +179,7 @@ def displayCards(cardNumbers,cardsWithPlayers,incards):
         locCard = pygame.transform.scale(locCard,(80,105))
         screen.blit(locCard,(x,y))
         #pygame.display.update()
-    pygame.display.update()
+    #pygame.display.update()
     time.sleep(10)
 def selectCard(cardNumbers,cardsWithPlayers,incards): #code for selecting the card from the cards of the player
     index = 0
@@ -227,4 +234,4 @@ def selectCard(cardNumbers,cardsWithPlayers,incards): #code for selecting the ca
             else:
                 screen.blit(locCard, (x, y))
             count += 1
-        pygame.display.update()
+        #pygame.display.update()

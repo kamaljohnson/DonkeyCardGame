@@ -28,6 +28,8 @@ class Menu():
 
     def menu_UI(self,current_menu):
         pos = 0
+        screen2.blit(background, (0, 0))
+        blitBackground = False
         while(True):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -35,29 +37,35 @@ class Menu():
                     exit(0)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
+                        blitBackground = True
                         if pos != len(current_menu) - 1:
                             sound_select.play()
                         pos += 1
                     elif event.key == pygame.K_UP:
+                        blitBackground = True
                         if pos != 0:
                             sound_select.play()
                         pos -= 1
                     elif event.key == pygame.K_SPACE:
                         return(pos)
+                else:
+                    blitBackground = False
                 if pos ==len(current_menu):
+                    blitBackground = False
                     pos = len(current_menu) - 1
                 if pos<0:
+                    blitBackground = False
                     pos = 0
-                myfont = pygame.font.SysFont("arial", 40)
-                screen2.blit(background,(0,0))
-                pygame.display.update()
+                if(blitBackground):
+                    screen2.blit(background,(0,0))
+                #pygame.display.update()
                 for menu_pos in range(len(current_menu)):
                     if pos == menu_pos:
                         myfont = pygame.font.SysFont("arial", 50)
                         label = myfont.render('->' + current_menu[menu_pos], 2, self.black)
                         screen2.blit(label,(screenx//2-110,screeny//2))
-                        myfont = pygame.font.SysFont("arial", 50)
                     else:
+                        myfont = pygame.font.SysFont("arial", 40)
                         label = myfont.render(current_menu[menu_pos], 2, self.blue)
                         screen2.blit(label, (screenx//2-60,screeny//2 + (menu_pos - pos)*50))
-                    pygame.display.update()
+                    #pygame.display.update()
