@@ -43,13 +43,13 @@ def socket_accept(numberOfClients):
         print("Connection has been established | " + "IP " + address[0] + " | Port " + str(address[1]))
         All_connections.append(conn)
         All_address.append(address)
-        if len(All_connections) == numberOfClients:
-            print('connected to all',numberOfClients)
-            return 1
         t1 = threading.Thread(target = sendingthreader)
         t1.start()
         t2 = threading.Thread(target = Recv,args=(conn,))
         t2.start()
+        if len(All_connections) == numberOfClients:
+            print('connected to all',numberOfClients)
+            return 1
 
 def sendingthreader():
     while True:
@@ -67,9 +67,11 @@ def Send(data,connIndex):
 
 def Recv(conn):
     print('ready to recv data from client')
-    data = conn.recv(1024)
-    dataRecved.append(str.decode(data))
-
+    while True:
+        data,addr = conn.recvfrom(1024)
+        print('send by',addr)
+        dataRecved.append(data.decode())
+        print(dataRecved)
 #returns the list of data recved from the other computers
 def getData():
     return(dataRecved)

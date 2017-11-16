@@ -1,12 +1,10 @@
 import Display
 import threading
-from queue import Queue
 import socket
 import menu
 import pygame
 import server
 import client
-import time
 
 pygame.init()
 
