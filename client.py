@@ -5,6 +5,9 @@ dataQ = Queue()
 
 all_recved_data = []
 
+incards = []
+isPlay = False
+
 # Create a socket
 def socket_create(ip):
     try:
@@ -41,6 +44,14 @@ def recvdata():
         print('ready to recv data from server')
         data = s.recv(1024)
         all_recved_data.append(data.decode())
+        d = data.decode()
+        d = d.split(':')
+        if d[0] == 'play':
+            isPlay = True
+            pass
+        if d[0] == 'newplay':
+            isPlay = True
+        incards = d[-1]
         print(all_recved_data)
 def get_recved_data():
     return all_recved_data

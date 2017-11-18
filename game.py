@@ -7,6 +7,11 @@ import server
 import client
 import random
 
+#this funtion will split the list into n number of lists with same of same + 1 number
+#this is used to split the cards into players
+
+others = []     #this will store the number of cards with each of the players
+
 def chunks(l, n):
     splitlist = []
     d = 52//n
@@ -26,20 +31,24 @@ def chunks(l, n):
         k+=1
     return splitlist
 pygame.init()
+
 #all the types of strings send  over the connection
 #
-#       1 - <name of the player> text           this is se
-#       2 - <play>  text
-#       3 - <display> text
+#       1 - <playnew>               this tells the client that its his/her turn to play a new round
+#       2 - <play>                  this tells the client that its his/her turn
+#       3 - <just> incards          this is for the client : the data of the incards
+#       4 - <add> cards             this is the data of cards to be added to the bunch
+
 AllTheCards = []
+
 for x in range(1,53):
     AllTheCards.append(str(x)+' ')
 random.shuffle(AllTheCards)
+
 #this funtions will update the screen regularly with a particular FPS
 def drawing():
     print('i am here')
-    while True:
-        Display.drawing()
+    Display.drawing()
 drawingThread = threading.Thread(target=drawing)
 drawingThread.start()
 
@@ -111,6 +120,7 @@ while(True):
         m = menu.Menu()
         select = m.menu_UI(tempMenu)
         mycards = ''
+        playfirst = 10
         if select == 0:
             play = True
             # shuffel the cards and do all the other initialisations for the game to begin
@@ -118,8 +128,15 @@ while(True):
                 cards = chunks(AllTheCards,players+1)
                 clients = server.All_connections
                 for c in range(len(clients)):
+                    others.append(len(cards[c]))
+                    if '13' in cards[c]:
+                        playfirst = c
                     cards[c] = ''.join(cards[c])
                     server.Send(cards[c],clients[c])
+                others.append(len(cards[c]))
+                server.cardsWithPeople = others
+                if '13' in cards[-1]:
+                    playfirst = -1
                 cards[-1] = ''.join(cards[-1])
                 mycards = cards[-1]
                 print('My cards :',mycards)
@@ -134,7 +151,25 @@ while(True):
             Display.bootUp()
         elif select == 1:
             play = False
+        print(playfirst)
+        if playfirst == -1:
+            server.isPlay = True
+        else:
+            conn = server.All_connections[playfirst]
+            server.Send('newplay:',conn)
         while play:     #this is the main game loop
             #<my cards ,cards with players , in cards >
-            Display.displayCards(mycards,[5,5,5,5],[1,2,3])
-            S = input()
+            if isServer:
+                if server.isPlay == True:   #the server person is to play
+                    se = Display.selectCard(mycards,others,server.incards)
+                    mycards.remove(se[0])
+                else:
+                    Display.displayCards(mycards,others,server.incards)
+                pass
+            else:
+                if client.isPlay == True:
+                    se = Display.selectCard(mycards,others,client.incards)
+                    mycards.remove(se[0])
+                else:
+                    Display.displayCards(mycards,others,client.incards)
+                pass

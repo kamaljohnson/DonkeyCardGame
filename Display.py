@@ -7,8 +7,9 @@ pygame.init()
 FPS = 60        #the frams per second is initialised to 30
 
 def drawing():
-    time.sleep(1/FPS)
-    pygame.display.update()
+    while True:
+        time.sleep(1/FPS)
+        pygame.display.update()
 
 screenx = 600
 screeny = 600    #these are the size of the screen for the game
@@ -185,54 +186,61 @@ def displayCards(cardNumbers,cardsWithPlayers,incards):
 def selectCard(cardNumbers,cardsWithPlayers,incards): #code for selecting the card from the cards of the player
     index = 0
     cardno = -10
+    screen.blit(background, (0, 0))
+    change = True
+    flag = 1
     while True:
+        change = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit(0)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    change = True
                     index -= 1
                     if index < 0:
                         index = len(cardNumbers) - 1
                 if event.key == pygame.K_RIGHT:
+                    change = True
                     index += 1
                     if index >= len(cardNumbers):
                         index = 0
                 if event.key == pygame.K_SPACE:
+                    change = True
                     return cardno,cardNumbers
-        screen.blit(background, (0, 0))
         space = 20
         y = 10
         x = 10
-        for n in cardsWithPlayers:
-            x = 10
-            for i in range(n):
-                locCard = pygame.image.load(cards[52]).convert()
-                locCard = pygame.transform.scale(locCard, (30, 40))
+        if change or flag == 1:
+            screen.blit(background, (0, 0))
+            flag = 0
+            for n in cardsWithPlayers:
+                x = 10
+                for i in range(n):
+                    locCard = pygame.image.load(cards[52]).convert()
+                    locCard = pygame.transform.scale(locCard, (30, 40))
+                    screen.blit(locCard, (x, y))
+                    x += space
+                y += 20
+            x = screenx // 2 - (len(incards) * space // 2 + 35)
+            y = 260
+            for card in incards:
+                x += space
+                locCard = pygame.image.load(cards[card - 1]).convert()
+                locCard = pygame.transform.scale(locCard, (80, 105))
                 screen.blit(locCard, (x, y))
                 # pygame.display.update()
+            x = screenx // 2 - (len(cardNumbers) * space // 2 + 35)
+            y = 450
+            count = 0
+            for card in cardNumbers:
                 x += space
-            y += 20
-        x = screenx // 2 - (len(incards) * space // 2 + 35)
-        y = 260
-        for card in incards:
-            x += space
-            locCard = pygame.image.load(cards[card - 1]).convert()
-            locCard = pygame.transform.scale(locCard, (80, 105))
-            screen.blit(locCard, (x, y))
-            # pygame.display.update()
-        x = screenx // 2 - (len(cardNumbers) * space // 2 + 35)
-        y = 450
-        count = 0
-        for card in cardNumbers:
-            x += space
-            locCard = pygame.image.load(cards[card - 1]).convert()
-            locCard = pygame.transform.scale(locCard, (80, 105))
-            if count == index:
-                screen.blit(locCard, (x, y-20))
-                cardno = card
-            else:
-                screen.blit(locCard, (x, y))
-            count += 1
-        #pygame.display.update()
+                locCard = pygame.image.load(cards[card - 1]).convert()
+                locCard = pygame.transform.scale(locCard, (80, 105))
+                if count == index:
+                    screen.blit(locCard, (x, y-20))
+                    cardno = card
+                else:
+                    screen.blit(locCard, (x, y))
+                count += 1
