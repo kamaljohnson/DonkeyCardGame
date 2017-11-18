@@ -38,6 +38,7 @@ def socket_bind():
 
 # Establish connection with client (socket must be listening for them)
 def socket_accept(numberOfClients):
+    i = 0
     while True:
         conn, address = s.accept()
         print("Connection has been established | " + "IP " + address[0] + " | Port " + str(address[1]))
@@ -45,6 +46,7 @@ def socket_accept(numberOfClients):
         All_address.append(address)
         t1 = threading.Thread(target = sendingthreader)
         t1.start()
+        i += 1
         t2 = threading.Thread(target = Recv,args=(conn,))
         t2.start()
         if len(All_connections) == numberOfClients:
@@ -53,17 +55,19 @@ def socket_accept(numberOfClients):
 
 def sendingthreader():
     while True:
-        sending_data_and_conn = sendingQ.get()
-        sendto(sending_data_and_conn)
-        sendingQ.task_done()
+        if not sendingQ.empty():
+            data,conn = sendingQ.get()
+            sendto(data,conn)
+            sendingQ.task_done()
 
 # Send commands
-def sendto(sending_data_and_conn):
-    sending_data_and_conn[1].send(sending_data_and_conn[0])
+def sendto(data,conn):
+    print(data)
+    conn.send(str.encode(data))
 
 #send data to a particular computer with the connIndex
-def Send(data,connIndex):
-    sendingQ.put([data,connIndex])
+def Send(data,conn):
+    sendingQ.put([data,conn])
 
 def Recv(conn):
     print('ready to recv data from client')
